@@ -1,4 +1,4 @@
-<?php require 'serversettings.php'; ?>
+<?php require_once 'settings.php'; ?>
 
 <!DOCTYPE html>
 <html>
@@ -6,7 +6,6 @@
     <meta charset="utf-8" />
     <title>Visitor Registration System</title>
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script>
 </head>
 <body>
 <?php

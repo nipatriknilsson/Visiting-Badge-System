@@ -12,7 +12,7 @@ sudo apt-get install openssh-server
 ```
 In Vitualbox host's machinne connect to the guest using SSH and run
 ```
-sudo apt-get install apache2 mysql-server php libapache2-mod-php php-mcrypt php-mysql 
+sudo apt-get install apache2 mysql-server php libapache2-mod-php php-mcrypt php-mysql php-gd
 ```
 
 Password for MySQL server was set to "password" and is used throughout this exercise. "mysql-workbench" was also installed to ease the development.
@@ -22,7 +22,7 @@ Permission on the server file path:
 
 In a terminal write
 ```
-sudo chown +R user /var/www/html/uploads
+sudo chown -R user:www-data /var/www/html/
 sudo chmod u=+rwxs,g=+rwsx,o=+srx /var/www/html/uploads
 ```
 
