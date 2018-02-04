@@ -3,32 +3,44 @@
 require_once 'settings.php';
 require_once 'debug.php';
 
-function resizeImage ( $imageOldPath, $extension,  $maxWidth, $maxHeight ) {
+/*
+Reduces an picture image size keeping ratio.
+
+$sourcePathFilename Full path and file name to the picture image
+$extension Extension of the image. It may or may not be given in $sourcePathFilename
+$destinationPath Path where the converted image is to be saved.
+$maxWidth Max width of the created image.
+$maxHeight Max height of the created image.
+
+@return: File name with extension of the created image without path 
+*/
+
+function resizeImage ( $sourcePathFilename, $extension, $destinationPath, $maxWidth, $maxHeight ) {
     $result = '';
-    debug_log (  __FILE__, __LINE__, $imageOldPath );
+    debug_log (  __FILE__, __LINE__, $sourcePathFilename );
     debug_log (  __FILE__, __LINE__, $extension );
 
-    if ( $imageOldPath != '' && $extension != '' ) {
+    if ( $sourcePathFilename != '' && $extension != '' ) {
         if ( in_array ( $extension, array ( 'jpg', 'jpeg', 'png', 'gif' ) ) ) {
             switch ( $extension ) {
                 case 'jpg':
-                    $imageOldData = imagecreatefromjpeg ( $imageOldPath );
+                    $imageOldData = imagecreatefromjpeg ( $sourcePathFilename );
                     break;
 
                 case 'jpeg':
-                    $imageOldData = imagecreatefromjpeg ( $imageOldPath );
+                    $imageOldData = imagecreatefromjpeg ( $sourcePathFilename );
                     break;
 
                 case 'png':
-                    $imageOldData = imagecreatefrompng ( $imageOldPath );
+                    $imageOldData = imagecreatefrompng ( $sourcePathFilename );
                     break;
 
                 case 'gif':
-                    $imageOldData = imagecreatefromgif ( $imageOldPath );
+                    $imageOldData = imagecreatefromgif ( $sourcePathFilename );
                     break;
 
                 default:
-                    $imageOldData = imagecreatefromjpeg ( $imageOldPath );
+                    $imageOldData = imagecreatefromjpeg ( $sourcePathFilename );
             }
 
             $imageOldWidth = imagesx ( $imageOldData );
@@ -50,11 +62,13 @@ function resizeImage ( $imageOldPath, $extension,  $maxWidth, $maxHeight ) {
             imagejpeg ( $imageNewData, NULL, 100 );
             $imageNewDataString = ob_get_clean ();
 
-            $imageNewPathFilename = $GLOBALS [ 'uploadPathStore' ] . hash ( 'sha256', $imageNewDataString ) . uniqid () . '.jpg';
+            $imageNewFilename = hash ( 'sha256', $imageNewDataString ) . uniqid () . '.jpg';
+
+            $imageNewPathFilename = $destinationPath . $imageNewFilename;
 
             if ( file_put_contents ( $imageNewPathFilename, $imageNewDataString ) !== false )
             {
-                $result = $imageNewPathFilename;
+                $result = $imageNewFilename;
             }
 
             imagedestroy ( $imageNewData );

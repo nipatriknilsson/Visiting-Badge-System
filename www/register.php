@@ -1,5 +1,5 @@
 <?php
-    require_once 'imageconvert.php';
+    require_once 'imageresize.php';
     require_once 'settings.php';
     include_once 'debug.php';
     ?>
@@ -106,10 +106,10 @@
             } else {
                 debug_log ( __FILE__, __LINE__, 'Calling resize' );
 
-                $targetFileThumb = resizeImage ( $_FILES [ "photo" ] [ "tmp_name" ], $imageFileType, 50, 50 );
+                $targetFileThumb = resizeImage ( $_FILES [ "photo" ] [ "tmp_name" ], $imageFileType, $GLOBALS [ 'uploadPathStore' ], 50, 50 );
                 debug_log ( __FILE__, __LINE__, $targetFileThumb );
 
-                $targetFileFull = resizeImage ( $_FILES [ "photo" ] [ "tmp_name" ], $imageFileType, 250, 250 );
+                $targetFileFull = resizeImage ( $_FILES [ "photo" ] [ "tmp_name" ], $imageFileType, $GLOBALS [ 'uploadPathStore' ], 250, 250 );
                 debug_log ( __FILE__, __LINE__, $targetFileFull );
 
                 if ( $targetFileThumb != '' && $targetFileFull != '' ) {
