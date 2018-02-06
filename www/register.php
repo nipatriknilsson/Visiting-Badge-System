@@ -9,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Arrival</title>
+    <title>Register Visit</title>
 
     <link rel="stylesheet" href="jquery-ui/jquery-ui.css">
     <script src="jquery/jquery.min.js"></script>
@@ -17,16 +17,20 @@
   
     <script>
         $( function() {
-            $( "#fromdate" ).datepicker( { minDate: "0", dateFormat: "yy-mm-dd" } ).val();
+            $( "#fromdate" ).datepicker( { minDate: "0", dateFormat: "yy-mm-dd", firstDay: 1 } ).val();
         } );
         $( function() {
-            $( "#todate" ).datepicker( { minDate: "0", dateFormat: "yy-mm-dd" } ).val();
+            $( "#todate" ).datepicker( { minDate: "0", dateFormat: "yy-mm-dd", firstDay: 1 } ).val();
         } );
 
         function updateUI () {
             enabled=true;
 
             if ( $( '#fullname' ).val () == "" ) {
+                enabled=false;
+            }
+
+            if ( $( '#subject' ).val () == "" ) {
                 enabled=false;
             }
 
@@ -49,6 +53,9 @@
             $( '#fullname' ).on ( 'keyup', function (e) {
                 updateUI ();
             });
+            $( '#subject' ).on ( 'keyup', function (e) {
+                updateUI ();
+            });
             $( '#fromdate' ).on ( 'change', function (e) {
                 updateUI ();
             });
@@ -66,16 +73,19 @@
         $displayform = 1;
         $displayrequried = 0;
         $post_fullname = '';
+        $post_subject = '';
         $post_fromdate = '';
         $post_todate = '';
 
         if ( $_SERVER [ 'REQUEST_METHOD' ] == 'POST' ) {
             $post_fullname = $_POST [ 'fullname' ];
+            $post_subject = $_POST [ 'subject' ];
             $post_fromdate = $_POST [ 'fromdate' ];
             $post_todate = $_POST [ 'todate' ];
             $post_photo = $_FILES [ 'photo' ][ 'name' ];
 
             debug_log ( __FILE__, __LINE__, $post_fullname );
+            debug_log ( __FILE__, __LINE__, $post_subject );
             debug_log ( __FILE__, __LINE__, $post_fromdate );
             debug_log ( __FILE__, __LINE__, $post_todate );
             debug_log ( __FILE__, __LINE__, $post_photo );
@@ -118,14 +128,33 @@
                     debug_log ( __FILE__, __LINE__, "The file " . $targetFileThumb . " was uploaded." );
                     debug_log ( __FILE__, __LINE__, "The file " . $targetFileFull . " was uploaded." );
 
-                    echo "Print your card";
+                    echo "<b>Print Your card</b>";
+                    echo "<br>";
+                    echo "<br>";
+
+                    echo "<table style=\"min-width:300; max-width=200;min-height:200; max-height:200;\">";
+                    echo "<tr>";
+                    echo "<th>";
+                    echo "<img src=\"/uploads/" .  $targetFileFull . "\">";
+                    echo "</th>";
+                    echo "<th>";
+                    echo "<h2>$post_fullname</h2>";
+                    echo "<b>$post_fromdate</b> -- <b>$post_todate</b>";
+                    echo "<h2>$post_subject</h2>";
+                    echo "</th>";
+                    echo "</tr>";
+                    echo "</table>";
+                    echo "<br>";
+
+                    echo "<a href=\"/\">Return to Welcome Page</a>";
+
                     exit;
                 } else {
                     echo "Sorry, there was an error uploading your file.";
                 }
             }
 
-            if ( $post_fullname !== "" && $post_fromdate !== "" && $post_todate !== "" ) {
+            if ( $post_fullname !== "" && $post_subject !== "" && $post_fromdate !== "" && $post_todate !== "" ) {
                 $displayform = 0;
                 debug_log ( __FILE__, __LINE__, 'SUBMIT!' );
     
@@ -145,6 +174,11 @@
             Full Name:
             <br>
             <input type="text" name="fullname" id="fullname" value="<?php echo $post_fullname; ?>">
+            <br>
+            <br>
+            Subject:
+            <br>
+            <input type="text" name="subject" id="subject" value="<?php echo $post_subject; ?>">
             <br>
             <br>
             First Day of Visit:
