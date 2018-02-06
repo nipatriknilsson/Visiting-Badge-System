@@ -30,7 +30,7 @@
                 enabled=false;
             }
 
-            if ( $( '#subject' ).val () == "" ) {
+            if ( $( '#errand' ).val () == "" ) {
                 enabled=false;
             }
 
@@ -53,7 +53,7 @@
             $( '#fullname' ).on ( 'keyup', function (e) {
                 updateUI ();
             });
-            $( '#subject' ).on ( 'keyup', function (e) {
+            $( '#errand' ).on ( 'keyup', function (e) {
                 updateUI ();
             });
             $( '#fromdate' ).on ( 'change', function (e) {
@@ -73,19 +73,19 @@
         $displayform = 1;
         $displayrequried = 0;
         $post_fullname = '';
-        $post_subject = '';
+        $post_errand = '';
         $post_fromdate = '';
         $post_todate = '';
 
         if ( $_SERVER [ 'REQUEST_METHOD' ] == 'POST' ) {
             $post_fullname = $_POST [ 'fullname' ];
-            $post_subject = $_POST [ 'subject' ];
+            $post_errand = $_POST [ 'errand' ];
             $post_fromdate = $_POST [ 'fromdate' ];
             $post_todate = $_POST [ 'todate' ];
             $post_photo = $_FILES [ 'photo' ][ 'name' ];
 
             debug_log ( __FILE__, __LINE__, $post_fullname );
-            debug_log ( __FILE__, __LINE__, $post_subject );
+            debug_log ( __FILE__, __LINE__, $post_errand );
             debug_log ( __FILE__, __LINE__, $post_fromdate );
             debug_log ( __FILE__, __LINE__, $post_todate );
             debug_log ( __FILE__, __LINE__, $post_photo );
@@ -123,6 +123,46 @@
                 debug_log ( __FILE__, __LINE__, $targetFileFull );
 
                 if ( $targetFileThumb != '' && $targetFileFull != '' ) {
+
+                    $link = mysqli_connect ( $servername, $username, $password, $database );
+
+                    /* check connection */
+                    if ( ! $link ) {
+                        printf ( "Connect failed: %s\n", mysqli_connect_error () );
+                        die ();
+                    }
+
+                    $sqlinsert = 'INSERT INTO visitors ( ';
+                    $sqlinsert .= 'fullname' . ', ';
+                    $sqlinsert .= 'phone' . ', ' ;
+                    $sqlinsert .= 'errand' . ', ' ;
+                    $sqlinsert .= 'fromdate' . ', ';
+                    $sqlinsert .= 'todate' . ', ';
+                    $sqlinsert .= 'photothumb' . ', ';
+                    $sqlinsert .= 'photobadge' . ', ';
+                    $sqlinsert .= 'active';
+                    $sqlinsert .= '  ) VALUES ( ';
+
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_fullname ) . '\', ';
+                    $sqlinsert .= '\'' . 'Test' . '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_errand ) . '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_fromdate ) . '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_todate ) . '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $targetFileThumb ).  '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $targetFileFull ) . '\', ';
+                    $sqlinsert .= ' true )';
+                     
+                    debug_log ( __FILE__, __LINE__, "SQL insert: " . $sqlinsert );
+
+                    $retval = mysqli_query ( $link, $sqlinsert );
+
+                    if ( $retval === false ) {
+                        printf ( "Insert failed: %s\n", mysqli_error ( $link ) );
+                        die ();
+                    }
+
+                    mysqli_close ( $link );
+
                     debug_log ( __FILE__, __LINE__, "The file " . $_FILES["photo"]["name"] . " has been uploaded." );
                     debug_log ( __FILE__, __LINE__, "The file " . $_FILES["photo"]["tmp_name"] . " has been uploaded." );
                     debug_log ( __FILE__, __LINE__, "The file " . $targetFileThumb . " was uploaded." );
@@ -140,7 +180,7 @@
                     echo "<th>";
                     echo "<h2>$post_fullname</h2>";
                     echo "<b>$post_fromdate</b> -- <b>$post_todate</b>";
-                    echo "<h2>$post_subject</h2>";
+                    echo "<h2>$post_errand</h2>";
                     echo "</th>";
                     echo "</tr>";
                     echo "</table>";
@@ -154,7 +194,7 @@
                 }
             }
 
-            if ( $post_fullname !== "" && $post_subject !== "" && $post_fromdate !== "" && $post_todate !== "" ) {
+            if ( $post_fullname !== "" && $post_errand !== "" && $post_fromdate !== "" && $post_todate !== "" ) {
                 $displayform = 0;
                 debug_log ( __FILE__, __LINE__, 'SUBMIT!' );
     
@@ -176,9 +216,9 @@
             <input type="text" name="fullname" id="fullname" value="<?php echo $post_fullname; ?>">
             <br>
             <br>
-            Subject:
+            Errand:
             <br>
-            <input type="text" name="subject" id="subject" value="<?php echo $post_subject; ?>">
+            <input type="text" name="errand" id="errand" value="<?php echo $post_errand; ?>">
             <br>
             <br>
             First Day of Visit:
