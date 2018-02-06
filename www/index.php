@@ -1,4 +1,7 @@
-<?php require_once 'settings.php'; ?>
+<?php
+    require_once 'settings.php';
+    include_once 'debug.php';
+    ?>
 
 <!DOCTYPE html>
 <html>
@@ -10,12 +13,13 @@
 <body>
 <?php
 
-$link = mysqli_connect($servername, $username, $password, $database);
+$link = mysqli_connect ( $servername, $username, $password, $database );
 
 /* check connection */
-if (!$link) {
-    printf("Connect failed: %s\n", mysqli_connect_error());
-    exit();
+if ( ! $link ) {
+    debug_log ( __FILE__, __LINE__, mysqli_connect_error () );
+    printf("Connect failed: %s\n", mysqli_connect_error () );
+    die ();
 }
 
 ?>
@@ -32,7 +36,7 @@ $numberofrows = mysqli_num_rows ( $retval );
 if ( $numberofrows > 0 ) {  
     echo 'Number of resistered visitors: ' + $numberofrows;
     echo '<br>';
-    echo 'Number of Signed In visitors: ' + $numberofrows;
+    echo 'Number of Visitors signed in: ' + $numberofrows;
     echo '<br>';
 
     echo 'Registered visitors:';
@@ -57,9 +61,8 @@ if ( $numberofrows > 0 ) {
                 echo $row [ "id" ];
             echo '</th>';
             echo '<th>';
-                echo '<input type="button" value="Sign In">';
-                echo '<input type="button" value="Sign Out">';
-                echo '<input type="button" value="Print Badge">';
+                echo '<input type="button" value="Enter">';
+                echo '<input type="button" value="Leave">';
             echo '</th>';
     } //end of while 
 
@@ -68,7 +71,7 @@ if ( $numberofrows > 0 ) {
     echo "No registered visitors!";  
 }
 
-mysqli_close($link);
+mysqli_close ( $link );
 ?>
 
 </body>
