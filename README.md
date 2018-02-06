@@ -26,11 +26,11 @@ sudo chown -R user:www-data /var/www/html/
 sudo chmod u=+rwxs,g=+rwsx,o=+srx /var/www/html/uploads
 ```
 
-In MySQL Workbench write
+In MySQL Workbench execute
 ```
 create database visitingbadgesystem;
 use visitingbadgesystem;
-create table visitorsvisitors(id INTEGER PRIMARY KEY AUTO_INCREMENT, fullname VARCHAR(50) NOT NULL, phone VARCHAR(25) NOT NULL, errand VARCHAR(100), fromdate DATE NOT NULL, todate DATE NOT NULL, photo varchar(100) not null, loggedin BOOLEAN  );
-create user user IDENTIFIED BY 'password';
+create table visitors(id INTEGER PRIMARY KEY AUTO_INCREMENT, fullname VARCHAR(50) NOT NULL, phone VARCHAR(25) NOT NULL, errand VARCHAR(100), fromdate DATE NOT NULL, todate DATE NOT NULL, photothumb varchar(100) not null, photobadge varchar(100) not null,  active BOOLEAN not null );
+create user 'user'@'localhost' IDENTIFIED BY 'password';
+grant all privileges on visitingbadgesystem.visitors to 'user'@'localhost' identified by 'password';
 ```
-
