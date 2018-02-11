@@ -53,6 +53,9 @@
             $( '#fullname' ).on ( 'keyup', function (e) {
                 updateUI ();
             });
+            $( '#phone' ).on ( 'keyup', function (e) {
+                updateUI ();
+            });
             $( '#errand' ).on ( 'keyup', function (e) {
                 updateUI ();
             });
@@ -73,18 +76,21 @@
         $displayform = 1;
         $displayrequried = 0;
         $post_fullname = '';
+        $post_phone = '';
         $post_errand = '';
         $post_fromdate = '';
         $post_todate = '';
 
         if ( $_SERVER [ 'REQUEST_METHOD' ] == 'POST' ) {
             $post_fullname = $_POST [ 'fullname' ];
+            $post_phone = $_POST [ 'phone' ];
             $post_errand = $_POST [ 'errand' ];
             $post_fromdate = $_POST [ 'fromdate' ];
             $post_todate = $_POST [ 'todate' ];
             $post_photo = $_FILES [ 'photo' ][ 'name' ];
 
             debug_log ( __FILE__, __LINE__, $post_fullname );
+            debug_log ( __FILE__, __LINE__, $post_phone );
             debug_log ( __FILE__, __LINE__, $post_errand );
             debug_log ( __FILE__, __LINE__, $post_fromdate );
             debug_log ( __FILE__, __LINE__, $post_todate );
@@ -144,7 +150,7 @@
                     $sqlinsert .= '  ) VALUES ( ';
 
                     $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_fullname ) . '\', ';
-                    $sqlinsert .= '\'' . 'Test' . '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_phone ) . '\', ';
                     $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_errand ) . '\', ';
                     $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_fromdate ) . '\', ';
                     $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_todate ) . '\', ';
@@ -210,34 +216,39 @@
 
     <?php if ( $displayform == 1 ): ?>
         <form method="POST" action="#" enctype="multipart/form-data">
-        <fieldset>
-            Full Name:
-            <br>
-            <input type="text" name="fullname" id="fullname" value="<?php echo $post_fullname; ?>">
-            <br>
-            <br>
-            Errand:
-            <br>
-            <input type="text" name="errand" id="errand" value="<?php echo $post_errand; ?>">
-            <br>
-            <br>
-            First Day of Visit:
-            <br>
-            <input type="text" name="fromdate" id="fromdate" value="<?php echo $post_fromdate; ?>">
-            <br>
-            <br>
-            Last Day of Visit:
-            <br>
-            <input type="text" name="todate" id="todate" value="<?php echo $post_todate; ?>">
-            <br>
-            <br>
-            Photo to Upload:
-            <br>
-            <input type="file" name="photo" id="photo" value="<?php echo $post_photo; ?>" accept=".gif,.jpg,.jpeg,.png">
-            <br>
-            <br>
-            <input type="submit" id="submit" value="Submit" disabled="disabled">
-        </fieldset>
+            <fieldset>
+                Full Name:
+                <br>
+                <input type="text" name="fullname" id="fullname" value="<?php echo $post_fullname; ?>">
+                <br>
+                <br>
+                Phone:
+                <br>
+                <input type="text" name="phone" id="phone" value="<?php echo $post_phone; ?>">
+                <br>
+                <br>
+                Errand:
+                <br>
+                <input type="text" name="errand" id="errand" value="<?php echo $post_errand; ?>">
+                <br>
+                <br>
+                First Day of Visit:
+                <br>
+                <input type="text" name="fromdate" id="fromdate" value="<?php echo $post_fromdate; ?>">
+                <br>
+                <br>
+                Last Day of Visit:
+                <br>
+                <input type="text" name="todate" id="todate" value="<?php echo $post_todate; ?>">
+                <br>
+                <br>
+                Photo to Upload:
+                <br>
+                <input type="file" name="photo" id="photo" value="<?php echo $post_photo; ?>" accept=".gif,.jpg,.jpeg,.png">
+                <br>
+                <br>
+                <input type="submit" id="submit" value="Submit" disabled="disabled">
+            </fieldset>
         </form>
     <?php endif; ?>
 
