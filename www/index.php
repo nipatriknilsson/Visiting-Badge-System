@@ -265,7 +265,7 @@
     <?php endif; ?>
 
     <p><a href="list.php?pos=0&all=1">List of All registered users</a></p>
-    <p><a href="list.php?pos=0&all=0">List of active users</a></p>
+    <p><a href="list.php?pos=0&all=0">List of signed in users</a></p>
 
 </body>
 </html>

@@ -86,8 +86,10 @@ if ( $_SERVER [ 'REQUEST_METHOD' ] == 'GET' ) {
 
 if ( $get_all == "0" ) {
     $sqlshown='select * from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) AND active=1 LIMIT ' . $get_pos . ', ' . $numbereachpagedisplayed;
+    $headline ='Visitors currently in building';
 } else {
     $sqlshown='select * from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) LIMIT ' . $get_pos . ', ' . $numbereachpagedisplayed;
+    $headline ='All registered Visitors';
 }
 
 $rettime = mysqli_query ( $link, 'select count(*) from visitors where DATE(NOW()) BETWEEN fromdate AND todate' );  
@@ -98,19 +100,24 @@ $retactive = mysqli_query ( $link, 'select count(*) from visitors where ( DATE(N
 $arrayactive = mysqli_fetch_array ( $retactive );
 $numberactive = $arrayactive [ 0 ];
 
+if ( $get_all == "0" ) {
+    $numbertotal = $numberactive;
+} else {
+    $numbertotal = $numbertime;
+}
+
+
 echo '<b>';
 echo 'Visitors <u>registered</u>: ' . $numbertime;
 echo '<br>';
 echo 'Visitors <u>signed in</u>: ' . $numberactive;
-echo '<br>';
-echo '<br>';
 echo '</b>';
 
 $retshown = mysqli_query ( $link, $sqlshown );
 $numbershown = mysqli_num_rows ( $retshown );
 
 if ( $numbershown > 0 ) {  
-    echo 'Registered visitors:';
+    echo '<h1>' . $headline . '</h1>';
     
     //Table header
     echo '<table class="showregistered">';
@@ -199,7 +206,13 @@ if ( $numbershown > 0 ) {
 
     echo '</table>';
 
-    echo '<p><a href="list.php?pos=' . ( $get_pos + $numbereachpagedisplayed ) . '&all=' . $get_all . '">Next</a></p>';
+    debug_log ( __FILE__, __LINE__, $get_pos );
+    debug_log ( __FILE__, __LINE__, $numbereachpagedisplayed );
+    debug_log ( __FILE__, __LINE__, $numbertotal );
+
+    if ( $get_pos + $numbereachpagedisplayed < $numbertotal ) {
+        echo '<p><a href="list.php?pos=' . ( $get_pos + $numbereachpagedisplayed ) . '&all=' . $get_all . '">Next</a></p>';
+    }
 
 } else {
     echo "No registered visitors!";  
