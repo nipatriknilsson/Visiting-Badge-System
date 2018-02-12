@@ -26,6 +26,7 @@ Permission on the server file path:
 In a terminal write
 ```
 sudo chown -R user:www-data /var/www/html/
+sudo mkdir -p /var/www/html/uploads
 sudo chmod u=+rwxs,g=+rwsx,o=+srx /var/www/html/uploads
 ```
 
