@@ -1,185 +1,267 @@
 <?php
+
 /* 
- * Main page of the application. If anybody is registered into the database those are displayed.
+ * Without POST: Asking a user for input. When user submits data POST is called on itself
+ * With POST: Registers provided data into the database.
  * 
- * Data is shown in a table.
- * 
- * Provides a link to do a new registration.
+ * JQuery is used to display date input and to check if all data is entered. If not the submit button is disabled.
  */
+
 ?>
 
-
 <?php
+    require_once 'imageresize.php';
     require_once 'settings.php';
     include_once 'debug.php';
     ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title>Visitor Registration System</title>
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <style type="text/css">
-        table.showregistered {
-            font-family: verdana,arial,sans-serif;
-            font-size:11px;
-            color:#333333;
-            border-width: 1px;
-            border-color: #666666;
-            border-collapse: collapse;
-        }
-        table.showregistered th {
-            border-width: 1px;
-            padding: 8px;
-            border-style: solid;
-            border-color: #666666;
-            background-color: #dedede;
-        }
-        table.showregistered td {
-            border-width: 1px;
-            padding: 8px;
-            border-style: solid;
-            border-color: #666666;
-            background-color: #ffffff;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Visit</title>
 
+    <link rel="stylesheet" href="jquery-ui/jquery-ui.css">
+    <script src="jquery/jquery.min.js"></script>
+    <script src="jquery-ui/jquery-ui.js"></script>
+  
+    <script>
+        $( function() {
+            $( "#fromdate" ).datepicker( { minDate: "0", dateFormat: "yy-mm-dd", firstDay: 1 } ).val();
+        } );
+        $( function() {
+            $( "#todate" ).datepicker( { minDate: "0", dateFormat: "yy-mm-dd", firstDay: 1 } ).val();
+        } );
+
+        function updateUI () {
+            enabled=true;
+
+            if ( $( '#fullname' ).val () == "" ) {
+                enabled=false;
+            }
+
+            if ( $( '#errand' ).val () == "" ) {
+                enabled=false;
+            }
+
+            if ( $( '#fromdate' ).val () == "" ) {
+                enabled=false;
+            }
+
+            if ( $( '#todate' ).val () == "" ) {
+                enabled=false;
+            }
+
+            if ( $( '#photo' ).val () == "" ) {
+                enabled=false;
+            }
+
+            $( '#submit' ).prop('disabled', !enabled );
+        }
+
+        $( document ).ready ( function () {
+            $( '#fullname' ).on ( 'keyup', function (e) {
+                updateUI ();
+            });
+            $( '#phone' ).on ( 'keyup', function (e) {
+                updateUI ();
+            });
+            $( '#errand' ).on ( 'keyup', function (e) {
+                updateUI ();
+            });
+            $( '#fromdate' ).on ( 'change', function (e) {
+                updateUI ();
+            });
+            $( '#todate' ).on ( 'change', function (e) {
+                updateUI ();
+            });
+            $( '#photo' ).on ( 'change', function (e) {
+                updateUI ();
+            });
+        });
+    </script>
 </head>
 <body>
-<?php
+    <?php
+        $displayform = 1;
+        $displayrequried = 0;
+        $post_fullname = '';
+        $post_phone = '';
+        $post_errand = '';
+        $post_fromdate = '';
+        $post_todate = '';
 
-$link = mysqli_connect ( $servername, $username, $password, $database );
+        if ( $_SERVER [ 'REQUEST_METHOD' ] == 'POST' ) {
+            $post_fullname = $_POST [ 'fullname' ];
+            $post_phone = $_POST [ 'phone' ];
+            $post_errand = $_POST [ 'errand' ];
+            $post_fromdate = $_POST [ 'fromdate' ];
+            $post_todate = $_POST [ 'todate' ];
+            $post_photo = $_FILES [ 'photo' ][ 'name' ];
 
-/* check connection */
-if ( ! $link ) {
-    debug_log ( __FILE__, __LINE__, mysqli_connect_error () );
-    printf("Connect failed: %s\n", mysqli_connect_error () );
-    die ();
-}
+            debug_log ( __FILE__, __LINE__, $post_fullname );
+            debug_log ( __FILE__, __LINE__, $post_phone );
+            debug_log ( __FILE__, __LINE__, $post_errand );
+            debug_log ( __FILE__, __LINE__, $post_fromdate );
+            debug_log ( __FILE__, __LINE__, $post_todate );
+            debug_log ( __FILE__, __LINE__, $post_photo );
 
-?>
+            $uploadOk = 1;
+            $imageFileType = strtolower ( pathinfo ( $_FILES [ "photo" ] [ "name" ], PATHINFO_EXTENSION ) );
+            debug_log ( __FILE__, __LINE__, $imageFileType );
 
-<a href="register.php">New Register</a>
-<br>
-<br>
+            // Check if image file is a actual image or fake image
 
-<?php
-/* Show visitor list */
+            $imageCheck = getimagesize ( $_FILES [ "photo" ][ "tmp_name" ] );
+            if ( $imageCheck !== false ) {
+                debug_log ( __FILE__, __LINE__, $imageCheck [ "mime" ] );
+            } else {
+                echo "<h1>File is not an image.</h1>";
+                $uploadOk = 0;
+            }
 
-$retval = mysqli_query ( $link, $sqlqueryallcurrent );  
-$numberofrows = mysqli_num_rows ( $retval );
+            // Check file size
+            if ( $_FILES [ "photo" ][ "size" ] > 1000000 ) {
+                echo "<h1>Sorry, your image is too large.</h1>";
+                $uploadOk = 0;
+            }
 
-$retactive = mysqli_query ( $link, 'select count(*) from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) AND active=1' );
-$retactiverow = mysqli_fetch_array ( $retactive );
-$numberofactive = $retactiverow [ 0 ];
+            // Check if $uploadOk is set to 0 by an error
+            if ( $uploadOk == 0 ) {
+                debug_log ( __FILE__, __LINE__, 'Not uploaded' );
+            } else {
+                debug_log ( __FILE__, __LINE__, 'Calling resize' );
 
+                $targetFileThumb = resizeImage ( $_FILES [ "photo" ] [ "tmp_name" ], $imageFileType, $GLOBALS [ 'uploadPathStore' ], 50, 50 );
+                debug_log ( __FILE__, __LINE__, $targetFileThumb );
 
-if ( $numberofrows > 0 ) {  
-    echo '<b>';
-    echo 'Visitors <u>registered</u>: ' . $numberofrows;
-    echo '<br>';
-    echo 'Visitors <u>signed in</u>: ' . $numberofactive;
-    echo '<br>';
-    echo '<br>';
-    echo '</b>';
+                $targetFileFull = resizeImage ( $_FILES [ "photo" ] [ "tmp_name" ], $imageFileType, $GLOBALS [ 'uploadPathStore' ], 250, 250 );
+                debug_log ( __FILE__, __LINE__, $targetFileFull );
 
-    echo 'Registered visitors:';
-    
-    //Table header
-    echo '<table class="showregistered">';
-        echo '<tr>';
-            echo '<th>';
-                echo 'ID';
-            echo '</th>';
+                if ( $targetFileThumb != '' && $targetFileFull != '' ) {
 
-            echo '<th>';
-                echo 'Photo';
-            echo '</th>';
-            
-            echo '<th>';
-                echo 'Full Name';
-            echo '</th>';
-            
-            echo '<th>';
-                echo 'Phone';
-            echo '</th>';
-            
-            echo '<th>';
-                echo 'Errand';
-            echo '</th>';
-            
-            echo '<th>';
-                echo 'From Date';
-            echo '</th>';
-            
-            echo '<th>';
-                echo 'To Date';
-            echo '</th>';
+                    $link = mysqli_connect ( $servername, $username, $password, $database );
 
-            echo '<th>';
-                echo 'Status';
-            echo '</th>';
-        echo '</tr>';
-
-        while ( $row = mysqli_fetch_assoc ( $retval ) ) {  
-            echo '<tr>';
-                echo '<td>';
-                    echo $row [ "id" ];
-                echo '</td>';
-
-                echo '<td>';
-                    echo '<img src="/uploads/' . $row [ "photothumb" ] . '">';
-                echo '</td>';
-
-                echo '<td>';
-                    echo $row [ "fullname" ];
-                echo '</td>';
-
-                echo '<td>';
-                    echo $row [ "phone" ];
-                echo '</td>';
-
-                echo '<td>';
-                    echo $row [ "errand" ];
-                echo '</td>';
-
-                echo '<td>';
-                    echo $row [ "fromdate" ];
-                echo '</td>';
-
-                echo '<td>';
-                    echo $row [ "todate" ];
-                echo '</td>';
-
-                echo '<td>';
-                    if ( $row [ "active" ] == 1 ) {
-                        echo '<form method="POST" action="/changestatus.php" enctype="multipart/form-data">';
-                        echo '    <b style="color:green;">Signed In</b>';
-                        echo '    <input type="hidden" name="id" value="' . $row [ "id" ] . '">';
-                        echo '    <input type="hidden" name="status" value="0">';
-                        echo '    <input type="submit" id="submit" value="Leave">';
-                        echo '</form>';
-                    } else {
-                        echo '<form method="POST" action="/changestatus.php" enctype="multipart/form-data">';
-                        echo '    <b style="color:red;">Signed Out</b>';
-                        echo '    <input type="hidden" name="id" value="' . $row [ "id" ] . '">';
-                        echo '    <input type="hidden" name="status" value="1">';
-                        echo '    <input type="submit" id="submit" value="Enter">';
-                        echo '</form>';
+                    /* check connection */
+                    if ( ! $link ) {
+                        printf ( "Connect failed: %s\n", mysqli_connect_error () );
+                        die ();
                     }
-                echo '</td>';
-        } //end of while 
 
-    echo '</table>';
-} else {
-    echo "No registered visitors!";  
-}
+                    $sqlinsert = 'INSERT INTO visitors ( ';
+                    $sqlinsert .= 'fullname' . ', ';
+                    $sqlinsert .= 'phone' . ', ' ;
+                    $sqlinsert .= 'errand' . ', ' ;
+                    $sqlinsert .= 'fromdate' . ', ';
+                    $sqlinsert .= 'todate' . ', ';
+                    $sqlinsert .= 'photothumb' . ', ';
+                    $sqlinsert .= 'photobadge' . ', ';
+                    $sqlinsert .= 'active';
+                    $sqlinsert .= '  ) VALUES ( ';
 
-mysqli_free_result ( $retval );
-mysqli_close ( $link );
-?>
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_fullname ) . '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_phone ) . '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_errand ) . '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_fromdate ) . '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $post_todate ) . '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $targetFileThumb ).  '\', ';
+                    $sqlinsert .= '\'' . mysqli_real_escape_string ( $link, $targetFileFull ) . '\', ';
+                    $sqlinsert .= ' true )';
+                     
+                    debug_log ( __FILE__, __LINE__, "SQL insert: " . $sqlinsert );
+
+                    $retval = mysqli_query ( $link, $sqlinsert );
+
+                    if ( $retval === false ) {
+                        printf ( "Insert failed: %s\n", mysqli_error ( $link ) );
+                        die ();
+                    }
+
+                    mysqli_close ( $link );
+
+                    debug_log ( __FILE__, __LINE__, "The file " . $_FILES["photo"]["name"] . " has been uploaded." );
+                    debug_log ( __FILE__, __LINE__, "The file " . $_FILES["photo"]["tmp_name"] . " has been uploaded." );
+                    debug_log ( __FILE__, __LINE__, "The file " . $targetFileThumb . " was uploaded." );
+                    debug_log ( __FILE__, __LINE__, "The file " . $targetFileFull . " was uploaded." );
+
+                    echo "<b>Print Your card</b>";
+                    echo "<br>";
+                    echo "<br>";
+
+                    echo "<table style=\"min-width:300; max-width=200;min-height:200; max-height:200;\">";
+                    echo "<tr>";
+                    echo "<th>";
+                    echo "<img src=\"/uploads/" .  $targetFileFull . "\">";
+                    echo "</th>";
+                    echo "<th>";
+                    echo "<h2>$post_fullname</h2>";
+                    echo "<b>$post_fromdate</b> -- <b>$post_todate</b>";
+                    echo "<h2>$post_errand</h2>";
+                    echo "</th>";
+                    echo "</tr>";
+                    echo "</table>";
+                    echo "<br>";
+
+                    echo "<a href=\"/\">Return to Welcome Page</a>";
+
+                    exit;
+                } else {
+                    echo "Sorry, there was an error uploading your file.";
+                }
+            }
+
+            if ( $post_fullname !== "" && $post_errand !== "" && $post_fromdate !== "" && $post_todate !== "" ) {
+                $displayform = 0;
+                debug_log ( __FILE__, __LINE__, 'SUBMIT!' );
+    
+            } else {
+                $displayrequried = 1;
+            }
+        }
+    ?>
+
+    <?php if ( $displayrequried == 1 ): ?>
+        <h2>All fielded are required</h2>
+    <?php endif; ?>
+
+    <?php if ( $displayform == 1 ): ?>
+        <form method="POST" action="#" enctype="multipart/form-data">
+            <fieldset>
+                Full Name:
+                <br>
+                <input type="text" name="fullname" id="fullname" value="<?php echo $post_fullname; ?>">
+                <br>
+                <br>
+                Phone:
+                <br>
+                <input type="text" name="phone" id="phone" value="<?php echo $post_phone; ?>">
+                <br>
+                <br>
+                Errand:
+                <br>
+                <input type="text" name="errand" id="errand" value="<?php echo $post_errand; ?>">
+                <br>
+                <br>
+                First Day of Visit:
+                <br>
+                <input type="text" name="fromdate" id="fromdate" value="<?php echo $post_fromdate; ?>">
+                <br>
+                <br>
+                Last Day of Visit:
+                <br>
+                <input type="text" name="todate" id="todate" value="<?php echo $post_todate; ?>">
+                <br>
+                <br>
+                Photo to Upload:
+                <br>
+                <input type="file" name="photo" id="photo" value="<?php echo $post_photo; ?>" accept=".gif,.jpg,.jpeg,.png">
+                <br>
+                <br>
+                <input type="submit" id="submit" value="Submit" disabled="disabled">
+            </fieldset>
+        </form>
+    <?php endif; ?>
 
 </body>
 </html>
- 
