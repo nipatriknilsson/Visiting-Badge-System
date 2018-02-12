@@ -1,4 +1,15 @@
 <?php
+
+/* 
+ * Without POST: Asking a user for input. When user submits data POST is called on itself
+ * With POST: Registers provided data into the database.
+ * 
+ * JQuery is used to display date input and to check if all data is entered. If not the submit button is disabled.
+ */
+
+?>
+
+<?php
     require_once 'imageresize.php';
     require_once 'settings.php';
     include_once 'debug.php';

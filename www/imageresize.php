@@ -4,16 +4,16 @@ require_once 'settings.php';
 require_once 'debug.php';
 
 /*
-Reduces an picture image size keeping ratio.
-
-$sourcePathFilename Full path and file name to the picture image
-$extension Extension of the image. It may or may not be given in $sourcePathFilename
-$destinationPath Path where the converted image is to be saved.
-$maxWidth Max width of the created image.
-$maxHeight Max height of the created image.
-
-@return: File name with extension of the created image without path 
-*/
+ * Reduces width and height of a picture image size keeping ratio.
+ * 
+ * $sourcePathFilename Full path and file name to the picture image
+ * $extension Extension of the image. It may or may not be given in $sourcePathFilename
+ * $destinationPath Path where the converted image is to be saved.
+ * $maxWidth Max width of the created image.
+ * $maxHeight Max height of the created image.
+ * 
+ * @return: File name with extension of the created image without path 
+ */
 
 function resizeImage ( $sourcePathFilename, $extension, $destinationPath, $maxWidth, $maxHeight ) {
     $result = '';

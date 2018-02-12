@@ -1,4 +1,10 @@
 <?php
+/* 
+ * Called from "index.php" when user changes status. Status is changed and then "index.php" is loaded with redirection.
+ */
+?>
+
+<?php
     require_once 'settings.php';
     include_once 'debug.php';
     ?>

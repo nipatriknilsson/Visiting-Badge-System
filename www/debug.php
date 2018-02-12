@@ -1,16 +1,10 @@
 <?php
 
-require_once 'settings.php';
-
-/*
-Enable debug of PHP: reports all errors.
-
-debug_log displays a message as Javascript console.log, but from inside of PHP. Call it as follows:
-
-debug_log ( __FILE__, __LINE__, 'message' );
-*/
-
-$debug = true;
+/* 
+ * debug_log displays a message by calling Javascript console.log, but from inside of PHP. Call it as follows:
+ * 
+ * debug_log ( __FILE__, __LINE__, 'message' );
+ */
 
 if ( $GLOBALS [ 'debug' ] ) {
     ini_set('display_errors', 1);

@@ -1,4 +1,15 @@
 <?php
+/* 
+ * Main page of the application. If anybody is registered into the database those are displayed.
+ * 
+ * Data is shown in a table.
+ * 
+ * Provides a link to do a new registration.
+ */
+?>
+
+
+<?php
     require_once 'settings.php';
     include_once 'debug.php';
     ?>
