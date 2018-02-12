@@ -83,6 +83,7 @@
     </script>
 </head>
 <body>
+    <h2>Register new visitor</h2>
     <?php
         $displayform = 1;
         $displayrequried = 0;
@@ -262,6 +263,9 @@
             </fieldset>
         </form>
     <?php endif; ?>
+
+    <p><a href="list.php?pos=0&all=1">List of All registered users</a></p>
+    <p><a href="list.php?pos=0&all=0">List of active users</a></p>
 
 </body>
 </html>

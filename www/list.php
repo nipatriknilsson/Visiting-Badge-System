@@ -60,30 +60,56 @@ if ( ! $link ) {
 
 ?>
 
-<a href="register.php">New Register</a>
+<a href="/">Return to register Page</a>
 <br>
 <br>
 
 <?php
 /* Show visitor list */
 
-$retval = mysqli_query ( $link, $sqlqueryallcurrent );  
-$numberofrows = mysqli_num_rows ( $retval );
+if ( $_SERVER [ 'REQUEST_METHOD' ] == 'GET' ) {
+    if ( $_GET [ 'pos' ] ) {
+        $get_pos = $_GET [ 'pos' ];
+    } else {
+        $get_pos = '0';
+    }
+
+    if ( $_GET [ 'all' ] ) {
+        $get_all = $_GET [ 'all' ];
+    } else {
+        $get_all = '0';
+    }
+
+    debug_log ( __FILE__, __LINE__, $get_pos );
+    debug_log ( __FILE__, __LINE__, $get_all );
+}
+
+if ( $get_all == "0" ) {
+    $sqlshown='select * from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) AND active=1 LIMIT ' . $get_pos . ', ' . $numbereachpagedisplayed;
+} else {
+    $sqlshown='select * from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) LIMIT ' . $get_pos . ', ' . $numbereachpagedisplayed;
+}
+
+$rettime = mysqli_query ( $link, 'select count(*) from visitors where DATE(NOW()) BETWEEN fromdate AND todate' );  
+$arraytime = mysqli_fetch_array ( $rettime );
+$numbertime = $arraytime [ 0 ];
 
 $retactive = mysqli_query ( $link, 'select count(*) from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) AND active=1' );
-$retactiverow = mysqli_fetch_array ( $retactive );
-$numberofactive = $retactiverow [ 0 ];
+$arrayactive = mysqli_fetch_array ( $retactive );
+$numberactive = $arrayactive [ 0 ];
 
+echo '<b>';
+echo 'Visitors <u>registered</u>: ' . $numbertime;
+echo '<br>';
+echo 'Visitors <u>signed in</u>: ' . $numberactive;
+echo '<br>';
+echo '<br>';
+echo '</b>';
 
-if ( $numberofrows > 0 ) {  
-    echo '<b>';
-    echo 'Visitors <u>registered</u>: ' . $numberofrows;
-    echo '<br>';
-    echo 'Visitors <u>signed in</u>: ' . $numberofactive;
-    echo '<br>';
-    echo '<br>';
-    echo '</b>';
+$retshown = mysqli_query ( $link, $sqlshown );
+$numbershown = mysqli_num_rows ( $retshown );
 
+if ( $numbershown > 0 ) {  
     echo 'Registered visitors:';
     
     //Table header
@@ -122,7 +148,7 @@ if ( $numberofrows > 0 ) {
             echo '</th>';
         echo '</tr>';
 
-        while ( $row = mysqli_fetch_assoc ( $retval ) ) {  
+        while ( $row = mysqli_fetch_assoc ( $retshown ) ) {  
             echo '<tr>';
                 echo '<td>';
                     echo $row [ "id" ];
@@ -172,11 +198,16 @@ if ( $numberofrows > 0 ) {
         } //end of while 
 
     echo '</table>';
+
+    echo '<p><a href="list.php?pos=' . ( $get_pos + $numbereachpagedisplayed ) . '&all=' . $get_all . '">Next</a></p>';
+
 } else {
     echo "No registered visitors!";  
 }
 
-mysqli_free_result ( $retval );
+mysqli_free_result ( $rettime );
+mysqli_free_result ( $retactive );
+mysqli_free_result ( $retshown );
 mysqli_close ( $link );
 ?>
 

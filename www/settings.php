@@ -19,5 +19,5 @@ $database = 'visitingbadgesystem';
 
 $uploadPathStore = '/var/www/html/uploads/';
 
-$sqlqueryall = 'select * from visitors';
-$sqlqueryallcurrent = 'select * from visitors where DATE(NOW()) BETWEEN fromdate AND todate';
+$numbereachpagedisplayed = 10;
+
