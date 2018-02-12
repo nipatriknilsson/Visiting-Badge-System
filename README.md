@@ -41,52 +41,6 @@ grant all privileges on visitingbadgesystem.visitors to 'user'@'localhost' ident
 Copy the files in the www folder to /var/www/html. Directory structure will look like:
 ```
 $ find /var/www/html | sort
-/var/www/html/.git/info
-/var/www/html/.git/refs
-/var/www/html/.git/refs/tags
-/var/www/html/.git/refs/heads
-/var/www/html/.git/refs/remotes
-/var/www/html/.git/refs/remotes/master
-/var/www/html/.git/logs
-/var/www/html/.git/logs/refs
-/var/www/html/.git/logs/refs/heads
-/var/www/html/.git/logs/refs/remotes
-/var/www/html/.git/logs/refs/remotes/master
-/var/www/html/.git/hooks
-user@server:~$ find /var/www/html -type d | sort
-/var/www/html
-/var/www/html/.git
-/var/www/html/.git/hooks
-/var/www/html/.git/info
-/var/www/html/.git/logs
-/var/www/html/.git/logs/refs
-/var/www/html/.git/logs/refs/heads
-/var/www/html/.git/logs/refs/remotes
-/var/www/html/.git/logs/refs/remotes/master
-/var/www/html/.git/objects
-/var/www/html/.git/objects/14
-/var/www/html/.git/objects/2b
-/var/www/html/.git/objects/2d
-/var/www/html/.git/objects/56
-/var/www/html/.git/objects/5f
-/var/www/html/.git/objects/66
-/var/www/html/.git/objects/81
-/var/www/html/.git/objects/e6
-/var/www/html/.git/objects/fb
-/var/www/html/.git/objects/info
-/var/www/html/.git/objects/pack
-/var/www/html/.git/refs
-/var/www/html/.git/refs/heads
-/var/www/html/.git/refs/remotes
-/var/www/html/.git/refs/remotes/master
-/var/www/html/.git/refs/tags
-/var/www/html/jquery
-/var/www/html/jquery-ui
-/var/www/html/jquery-ui/external
-/var/www/html/jquery-ui/external/jquery
-/var/www/html/jquery-ui/images
-/var/www/html/uploads
-$ find /var/www/html | sort
 /var/www/html
 /var/www/html/changestatus.php
 /var/www/html/debug.php
@@ -100,5 +54,4 @@ $ find /var/www/html | sort
 /var/www/html/register.php
 /var/www/html/settings.php
 /var/www/html/uploads
-$ 
 ```
