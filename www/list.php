@@ -80,32 +80,56 @@ if ( $_SERVER [ 'REQUEST_METHOD' ] == 'GET' ) {
         $get_all = '0';
     }
 
+    if ( $_GET [ 'filter' ] != "" ) {
+        $get_filter = strval ( $_GET [ 'filter' ] );
+    } else {
+        $get_filter = '';
+    }
+
+    debug_log ( __FILE__, __LINE__, $get_filter );
     debug_log ( __FILE__, __LINE__, $get_pos );
     debug_log ( __FILE__, __LINE__, $get_all );
 }
 
 if ( $get_all == "0" ) {
     $sqlshown='select * from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) AND active=1 LIMIT ' . $get_pos . ', ' . $numbereachpagedisplayed;
+
     $headline ='Visitors currently in building';
 } else {
-    $sqlshown='select * from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) LIMIT ' . $get_pos . ', ' . $numbereachpagedisplayed;
+    $sqlshown='select * from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) AND LOWER(fullname) LIKE LOWER(\'%' . $get_filter . '%\') LIMIT ' . $get_pos . ', ' . $numbereachpagedisplayed;
+
     $headline ='All registered Visitors';
 }
 
 $rettime = mysqli_query ( $link, 'select count(*) from visitors where DATE(NOW()) BETWEEN fromdate AND todate' );  
 $arraytime = mysqli_fetch_array ( $rettime );
 $numbertime = $arraytime [ 0 ];
+mysqli_free_result ( $rettime );
 
 $retactive = mysqli_query ( $link, 'select count(*) from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) AND active=1' );
 $arrayactive = mysqli_fetch_array ( $retactive );
 $numberactive = $arrayactive [ 0 ];
+mysqli_free_result ( $retactive );
 
-if ( $get_all == "0" ) {
-    $numbertotal = $numberactive;
+if ( $get_filter == "" ) {
+    if ( $get_all == "0" ) {
+        $numbertotal = $numberactive;
+    } else {
+        $numbertotal = $numbertime;
+    }
 } else {
-    $numbertotal = $numbertime;
-}
+    if ( $get_all == "0" ) {
+        $retfilter = mysqli_query ( $link, 'select count(*) from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) AND LOWER(fullname) LIKE LOWER(\'%' . $get_filter . '%\')' );
+    } else {
+        $retfilter = mysqli_query ( $link, 'select count(*) from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) AND LOWER(fullname) LIKE LOWER(\'%' . $get_filter . '%\') AND active=1' );
+    }
 
+    $arrayfilter = mysqli_fetch_array ( $retfilter );
+    $numbertotal = $arrayfilter [ 0 ];
+    mysqli_free_result ( $retfilter );
+
+    $headline = $headline . ' with filter "' . $get_filter . '"';
+}
 
 echo '<b>';
 echo 'Visitors <u>registered</u>: ' . $numbertime;
@@ -113,10 +137,19 @@ echo '<br>';
 echo 'Visitors <u>signed in</u>: ' . $numberactive;
 echo '</b>';
 
+echo '<br>';
+echo '<br>';
+echo '<form action="#">';
+echo '<input type="text" name="filter" value="' . $get_filter . '">';
+echo '<input type="text" hidden name="pos" value="0">';
+echo '<input type="text" hidden name="all" value="' . $get_all . '">';
+echo '<input type="submit" value="Filter">';
+echo '</form>';
+
 $retshown = mysqli_query ( $link, $sqlshown );
 $numbershown = mysqli_num_rows ( $retshown );
 
-if ( $numbershown > 0 ) {  
+if ( $numbershown > 0 ) {
     echo '<h1>' . $headline . '</h1>';
     
     //Table header
@@ -211,15 +244,13 @@ if ( $numbershown > 0 ) {
     debug_log ( __FILE__, __LINE__, $numbertotal );
 
     if ( $get_pos + $numbereachpagedisplayed < $numbertotal ) {
-        echo '<p><a href="list.php?pos=' . ( $get_pos + $numbereachpagedisplayed ) . '&all=' . $get_all . '">Next</a></p>';
+        echo '<p><a href="list.php?filter=' . $get_filter . '&pos=' . ( $get_pos + $numbereachpagedisplayed ) . '&all=' . $get_all . '">Next</a></p>';
     }
 
 } else {
     echo "No registered visitors!";  
 }
 
-mysqli_free_result ( $rettime );
-mysqli_free_result ( $retactive );
 mysqli_free_result ( $retshown );
 mysqli_close ( $link );
 ?>
