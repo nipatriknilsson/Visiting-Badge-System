@@ -45,8 +45,14 @@
         }
     </style>
 
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css" crossorigin="anonymous">
 </head>
-<body>
+<body class="container">
 <?php
 
 $link = mysqli_connect ( $servername, $username, $password, $database );
@@ -59,10 +65,6 @@ if ( ! $link ) {
 }
 
 ?>
-
-<a href="/">Return to register Page</a>
-<br>
-<br>
 
 <?php
 /* Show visitor list */
@@ -92,7 +94,7 @@ if ( $_SERVER [ 'REQUEST_METHOD' ] == 'GET' ) {
 }
 
 if ( $get_all == "0" ) {
-    $sqlshown='select * from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) AND active=1 LIMIT ' . $get_pos . ', ' . $numbereachpagedisplayed;
+    $sqlshown='select * from visitors where ( DATE(NOW()) BETWEEN fromdate AND todate ) AND LOWER(fullname) LIKE LOWER(\'%' . $get_filter . '%\') AND active=1 LIMIT ' . $get_pos . ', ' . $numbereachpagedisplayed;
 
     $headline ='Visitors currently in building';
 } else {
@@ -126,34 +128,50 @@ if ( $get_filter == "" ) {
 
     $arrayfilter = mysqli_fetch_array ( $retfilter );
     $numbertotal = $arrayfilter [ 0 ];
-    mysqli_free_result ( $retfilter );
 
-    $headline = $headline . ' with filter "' . $get_filter . '"';
+    mysqli_free_result ( $retfilter );
 }
 
-echo '<b>';
-echo 'Visitors <u>registered</u>: ' . $numbertime;
-echo '<br>';
-echo 'Visitors <u>signed in</u>: ' . $numberactive;
-echo '</b>';
+echo '<div class="row">';
+    echo '<div class="col-lg-4">';
+        echo '<a href="/">Return to register Page</a>';
+    echo '</div>';
+    
+    echo '<div class="col-lg-4 text-center">';
+        echo '<b>Visitors <u>registered</u>: ' . $numbertime . '</b>';
+    echo '</div>';
+
+    echo '<div class="col-lg-4 text-right">';
+        echo '<b>Visitors <u>signed in</u>: ' . $numberactive . '</b>';
+    echo '</div>';
+echo '</div>';
 
 echo '<br>';
-echo '<br>';
-echo '<form action="#">';
-echo '<input type="text" name="filter" value="' . $get_filter . '">';
-echo '<input type="text" hidden name="pos" value="0">';
-echo '<input type="text" hidden name="all" value="' . $get_all . '">';
-echo '<input type="submit" value="Filter">';
-echo '</form>';
 
 $retshown = mysqli_query ( $link, $sqlshown );
 $numbershown = mysqli_num_rows ( $retshown );
 
+echo '<div class="row">';
+    echo '<div class="col-lg-4">';
+        echo '<h3>' . $headline . '</h1>';
+    echo '</div>';
+
+    echo '<div class="col-lg-offset-1">';
+        echo '<form action="#">';
+        echo '<input type="text" name="filter" value="' . $get_filter . '">';
+        echo '<input type="text" hidden name="pos" value="0">';
+        echo '<input type="text" hidden name="all" value="' . $get_all . '">';
+        echo '<input type="submit" value="Filter by Full Name">';
+        echo '</form>';
+    echo '</div>';
+echo '</div>';
+
+
 if ( $numbershown > 0 ) {
-    echo '<h1>' . $headline . '</h1>';
-    
-    //Table header
-    echo '<table class="showregistered">';
+
+//Table header
+    echo '<div class="row">';
+    echo '<table class="showregistered col-lg-12">';
         echo '<tr>';
             echo '<th>';
                 echo 'ID';
@@ -238,6 +256,7 @@ if ( $numbershown > 0 ) {
         } //end of while 
 
     echo '</table>';
+    echo '</div>';
 
     debug_log ( __FILE__, __LINE__, $get_pos );
     debug_log ( __FILE__, __LINE__, $numbereachpagedisplayed );
@@ -248,12 +267,16 @@ if ( $numbershown > 0 ) {
     }
 
 } else {
-    echo "No registered visitors!";  
+    echo "Nothing to display!";  
 }
 
 mysqli_free_result ( $retshown );
 mysqli_close ( $link );
 ?>
+
+<script src="/jquery/jquery.min.js"></script>
+<script src="/popper/popper.min.js"></script>
+<script src="/bootstrap/bootstrap.min.js"></script>
 
 </body>
 </html>

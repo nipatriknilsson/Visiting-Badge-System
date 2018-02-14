@@ -22,10 +22,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Visit</title>
 
-    <link rel="stylesheet" href="jquery-ui/jquery-ui.css">
-    <script src="jquery/jquery.min.js"></script>
-    <script src="jquery-ui/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+    <script src="/jquery/jquery.min.js"></script>
+    <script src="/jquery-ui/jquery-ui.js"></script>
   
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css" crossorigin="anonymous">
+
     <script>
         $( function() {
             $( "#fromdate" ).datepicker( { minDate: "0", dateFormat: "yy-mm-dd", firstDay: 1 } ).val();
@@ -82,8 +89,19 @@
         });
     </script>
 </head>
-<body>
-    <h2>Register new visitor</h2>
+<body class="container">
+    <div class="row">
+        <div class="col-lg-4">
+            <h1>Register new visitor</h1>
+        </div>
+
+        <div class="col-lg-4">
+            <div><a href="list.php?pos=0&all=1&filter=">List of All registered users</a></div>
+            <div><a href="list.php?pos=0&all=0&filter=">List of signed in users</a></div>
+        </div>
+
+    </div>
+
     <?php
         $displayform = 1;
         $displayrequried = 0;
@@ -264,8 +282,8 @@
         </form>
     <?php endif; ?>
 
-    <p><a href="list.php?pos=0&all=1">List of All registered users</a></p>
-    <p><a href="list.php?pos=0&all=0">List of signed in users</a></p>
+    <script src="/popper/popper.min.js"></script>
+    <script src="/bootstrap/bootstrap.min.js"></script>
 
 </body>
 </html>
