@@ -43,6 +43,7 @@ Copy the files in the www folder to /var/www/html. Directory structure will look
 ```
 $ find /var/www/html | sort
 /var/www/html
+/var/www/html/alle.jpg
 /var/www/html/changestatus.php
 /var/www/html/debug.php
 /var/www/html/imageconvert.php
@@ -56,3 +57,5 @@ $ find /var/www/html | sort
 /var/www/html/settings.php
 /var/www/html/uploads
 ```
+
+Image credit: Wikipedia (https://commons.wikimedia.org/wiki/File:%C3%85keshovs_all%C3%A9.jpg)

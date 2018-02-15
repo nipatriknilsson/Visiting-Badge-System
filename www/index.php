@@ -33,6 +33,29 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/bootstrap/bootstrap.min.css" crossorigin="anonymous">
 
+    <style>
+        .myText {
+            position: relative;
+            z-index: 5;
+            color: #000;
+            font-size: 100%;
+            padding: 20px;
+        }
+
+        .myImage {
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: url('/alle.jpg') center center;
+            opacity: .1;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
     <script>
         $( function() {
             $( "#fromdate" ).datepicker( { minDate: "0", dateFormat: "yy-mm-dd", firstDay: 1 } ).val();
@@ -245,41 +268,48 @@
     <?php endif; ?>
 
     <?php if ( $displayform == 1 ): ?>
-        <form method="POST" action="#" enctype="multipart/form-data">
-            <fieldset>
-                Full Name:
-                <br>
-                <input type="text" name="fullname" id="fullname" value="<?php echo $post_fullname; ?>">
-                <br>
-                <br>
-                Phone:
-                <br>
-                <input type="text" name="phone" id="phone" value="<?php echo $post_phone; ?>">
-                <br>
-                <br>
-                Errand:
-                <br>
-                <input type="text" name="errand" id="errand" value="<?php echo $post_errand; ?>">
-                <br>
-                <br>
-                First Day of Visit:
-                <br>
-                <input type="text" name="fromdate" id="fromdate" value="<?php echo $post_fromdate; ?>">
-                <br>
-                <br>
-                Last Day of Visit:
-                <br>
-                <input type="text" name="todate" id="todate" value="<?php echo $post_todate; ?>">
-                <br>
-                <br>
-                Photo to Upload:
-                <br>
-                <input type="file" name="photo" id="photo" value="<?php echo $post_photo; ?>" accept=".gif,.jpg,.jpeg,.png">
-                <br>
-                <br>
-                <input type="submit" id="submit" value="Submit" disabled="disabled">
-            </fieldset>
-        </form>
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="myText">
+                    <div class="myImage"></div>
+                    <form method="POST" action="#" enctype="multipart/form-data">
+                        <fieldset>
+                            Full Name:
+                            <br>
+                            <input type="text" name="fullname" id="fullname" value="<?php echo $post_fullname; ?>">
+                            <br>
+                            <br>
+                            Phone:
+                            <br>
+                            <input type="text" name="phone" id="phone" value="<?php echo $post_phone; ?>">
+                            <br>
+                            <br>
+                            Errand:
+                            <br>
+                            <input type="text" name="errand" id="errand" value="<?php echo $post_errand; ?>">
+                            <br>
+                            <br>
+                            First Day of Visit:
+                            <br>
+                            <input type="text" name="fromdate" id="fromdate" value="<?php echo $post_fromdate; ?>">
+                            <br>
+                            <br>
+                            Last Day of Visit:
+                            <br>
+                            <input type="text" name="todate" id="todate" value="<?php echo $post_todate; ?>">
+                            <br>
+                            <br>
+                            Photo to Upload:
+                            <br>
+                            <input type="file" name="photo" id="photo" value="<?php echo $post_photo; ?>" accept=".gif,.jpg,.jpeg,.png">
+                            <br>
+                            <br>
+                            <input type="submit" id="submit" value="Submit" disabled="disabled">
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
     <?php endif; ?>
 
     <script src="/popper/popper.min.js"></script>
