@@ -1,10 +1,8 @@
 <?php
 /* 
- * Main page of the application. If anybody is registered into the database those are displayed.
+ * List data requested. Data is shown in a table.
  * 
- * Data is shown in a table.
- * 
- * Provides a link to do a new registration.
+ * Enables the visitor to leave the building.
  */
 ?>
 

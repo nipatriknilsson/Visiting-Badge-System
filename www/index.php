@@ -1,8 +1,7 @@
 <?php
 
 /* 
- * Without POST: Asking a user for input. When user submits data POST is called on itself
- * With POST: Registers provided data into the database.
+ * Display a page to register a new visitor
  * 
  * JQuery is used to display date input and to check if all data is entered. If not the submit button is disabled.
  */
@@ -119,8 +118,8 @@
         </div>
 
         <div class="col-lg-4">
-            <div><a href="list.php?pos=0&all=1&filter=">List of All registered users</a></div>
-            <div><a href="list.php?pos=0&all=0&filter=">List of signed in users</a></div>
+            <div><a href="list.php?pos=0&all=1&filter=">List of All registered visitors</a></div>
+            <div><a href="list.php?pos=0&all=0&filter=">List of signed in visitors</a></div>
         </div>
 
     </div>
