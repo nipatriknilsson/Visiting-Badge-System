@@ -1,8 +1,10 @@
-# Demonstration of a Visiting-Badge-System
+# WARNING: THIS PROJECT DEPENDS ON SOFTWARE WITH SECURITY ISSUES. IT WILL NOT BE UPDATED.
+
+## Demonstration of a Visiting-Badge-System
 
 This is a Visiting Badge System done as a project during my classes at Lexicon Malmö and demonstrates setting up a Ubuntu Linux Desktop (server) and installing necessary software to run it.
 
-## Ubuntu 16.04.3 LTS Installation
+### Ubuntu 16.04.3 LTS Installation
 
 During this exercise a VirtualBox installation of Ubuntu 16.04 is used as Guest and functions as a server for the MySQL database and Apache (LAMP).
 
